@@ -2,4 +2,7 @@
 
 This is the repository for storing and managing all the code and data regarding my bachelor thesis.
 
-The main data source is [this repository](https://github.com/dimaTrinh/dank_data).
+Links to the datasets:
+* [short samples](https://www.kaggle.com/team-ai/spam-text-message-classification)
+* [medium samples](https://www.kaggle.com/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews)
+* [long samples](https://www.kaggle.com/shivamkushwaha/bbc-full-text-document-classification)
