@@ -35,3 +35,5 @@ def build_model(hp):
     model.compile(loss='binary_crossentropy',
                     optimizer='adam',
                     metrics=['accuracy'])  
+
+print('asd')
