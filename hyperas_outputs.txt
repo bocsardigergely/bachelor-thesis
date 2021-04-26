@@ -12,3 +12,11 @@ Best performing model chosen hyper-parameters:
 
 opt for rnn:
 ----------------------------------
+Best validation acc of epoch:
+0.7731343507766724
+100% 15/15 [45:44<00:00, 182.97s/it, best loss: -0.8447760939598083]
+Evalutation of best performing model:
+52/52 [==============================] - 3s 40ms/step - loss: 0.4047 - accuracy: 0.8297
+[0.4046521782875061, 0.8296969532966614]
+Best performing model chosen hyper-parameters:
+{'Dropout': 0.4143619965361732, 'Dropout_1': 0.09225974322037533, 'Dropout_2': 0.20942239619394942, 'LSTM': 0, 'LSTM_1': 5}

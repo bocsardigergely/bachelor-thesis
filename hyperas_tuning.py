@@ -45,7 +45,7 @@ def data():
     text = np.asarray(df['text'])
     y = df["label"]
     text_train, text_test, y_train, y_test = train_test_split(
-    text, y, test_size=0.33, random_state=42)
+    text, y, test_size=0.2, random_state=42)
 
     X_train = vectorizer(text_train)
     X_test = vectorizer(text_test)
@@ -68,7 +68,8 @@ def build_convnet():
                           kw,
                           padding='valid',
                           activation='relu',
-                          strides=1, kernel_constraint=max_norm({{uniform(2,6)}})
+                          strides=1,
+                          kernel_constraint=max_norm({{uniform(1,8)}})
                             ))
       submodel.add(GlobalMaxPooling1D())
       submodels.append(submodel)
@@ -81,7 +82,7 @@ def build_convnet():
   
   big_model = Sequential()
   big_model.add(Dropout({{uniform(0,1)}}))
-  big_model.add(Dense({{choice([10,25,50,100])}}))
+  big_model.add(Dense({{choice([1,2,5,10,25,50,100])}}))
   big_model.add(Dropout({{uniform(0,1)}}))
   big_model.add(Activation('relu'))
   big_model.add(Dense(1))
@@ -116,9 +117,10 @@ def build_rnn():
   ))
   model.add(Bidirectional(LSTM(100, return_sequences=True)))
   model.add(Dropout({{uniform(0,1)}}))
-  model.add(Bidirectional(LSTM({{choice([10,25,50,100])}}, return_sequences=False)))
+  model.add(Bidirectional(LSTM({{choice([1,2,5,10,25,50,100])}}, return_sequences=False)))
   model.add(Dropout({{uniform(0,1)}}))
-  model.add(Dense({{choice([10,25,50,100])}}, activation='relu'))
+  model.add(Dense({{choice([1,2,5,10,25,50,100])}}, activation='relu'))
+  model.add(Dropout({{uniform(0,1)}}))
   model.add(Dense(1, activation='sigmoid'))
 
   model.compile(loss='binary_crossentropy',
@@ -126,9 +128,10 @@ def build_rnn():
                   metrics=['accuracy'])
 
   result = model.fit(X_train, y_train,
-            batch_size={{choice([32, 64, 128])}},
-            epochs=10,
-            validation_split=0.1)
+            batch_size=32,
+            epochs=15,
+            validation_split=0.1
+            )
   validation_acc = np.amax(result.history['val_accuracy']) 
   print('Best validation acc of epoch:', validation_acc)
   return {'loss': -validation_acc, 'status': STATUS_OK, 'model': model}
