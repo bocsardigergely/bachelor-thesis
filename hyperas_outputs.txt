@@ -1,20 +1,14 @@
 Optimization results for convnet:
 -------------------
-Best validation acc of epoch:
-0.8298507332801819
-100% 25/25 [15:18<00:00, 36.73s/it, best loss: -0.8477612137794495]
 Evalutation of best performing model:
-52/52 [==============================] - 1s 10ms/step - loss: 0.7933 - accuracy: 0.8042
-[0.7932714819908142, 0.8042424321174622]
+32/32 [==============================] - 0s 10ms/step - loss: 0.5409 - accuracy: 0.8230
+[0.5409070253372192, 0.8230000138282776]
 Best performing model chosen hyper-parameters:
-{'Dense': 66, 'Dropout': 0.2232551758526089, 'Dropout_1': 0.5226618564648536, 'batch_size': 0, 'max_norm': 5.8233940707366925}
+{'Dense': 2, 'Dropout': 0.09225974322037533, 'Dropout_1': 0.20942239619394942, 'max_norm': 5.397124926498551}
 -----------------------
 
 opt for rnn:
 ----------------------------------
-Best validation acc of epoch:
-0.7731343507766724
-100% 15/15 [45:44<00:00, 182.97s/it, best loss: -0.8447760939598083]
 Evalutation of best performing model:
 52/52 [==============================] - 3s 40ms/step - loss: 0.4047 - accuracy: 0.8297
 [0.4046521782875061, 0.8296969532966614]

@@ -96,7 +96,7 @@ def build_convnet():
                   metrics=['accuracy'])
 
   result = model.fit([X_train,X_train,X_train], y_train,
-            batch_size={{choice([32, 64, 128])}},
+            batch_size=32,
             epochs=10,
             validation_split=0.1)
   validation_acc = np.amax(result.history['val_accuracy']) 
@@ -138,7 +138,7 @@ def build_rnn():
 
 
 def optimize():
-    best_run, best_model = optim.minimize(model=build_rnn,
+    best_run, best_model = optim.minimize(model=build_convnet,
                                         data=data,
                                         algo=tpe.suggest,
                                         max_evals=15,
@@ -146,8 +146,8 @@ def optimize():
                                         )
     X_train, Y_train, X_test, Y_test = data()
     print("Evalutation of best performing model:")
-    #print(best_model.evaluate([X_test,X_test,X_test], Y_test))
-    print(best_model.evaluate(X_test, Y_test))
+    print(best_model.evaluate([X_test,X_test,X_test], Y_test))
+    #print(best_model.evaluate(X_test, Y_test))
     print("Best performing model chosen hyper-parameters:")
     print(best_run)
 
