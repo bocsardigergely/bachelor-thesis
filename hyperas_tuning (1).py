@@ -41,7 +41,7 @@ def data():
     df_train = df_joint.sample(frac=1).reset_index(drop=True)
     vectorizer.adapt(np.asarray(df_train["text"]))
 
-    df = df_medium
+    df = df_train
     text = np.asarray(df['text'])
     y = df["label"]
     text_train, text_test, y_train, y_test = train_test_split(

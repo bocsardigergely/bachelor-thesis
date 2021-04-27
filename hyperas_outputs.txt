@@ -1,4 +1,4 @@
-Optimization results for convnet:
+Optimization results for convnet on medium data:
 -------------------
 Evalutation of best performing model:
 32/32 [==============================] - 0s 10ms/step - loss: 0.5409 - accuracy: 0.8230
@@ -6,11 +6,28 @@ Evalutation of best performing model:
 Best performing model chosen hyper-parameters:
 {'Dense': 2, 'Dropout': 0.09225974322037533, 'Dropout_1': 0.20942239619394942, 'max_norm': 5.397124926498551}
 -----------------------
+convnet on joint:
 
-opt for rnn:
+Evalutation of best performing model:
+98/98 [==============================] - 2s 16ms/step - loss: 0.2273 - accuracy: 0.9261
+[0.22732621431350708, 0.9261162877082825]
+Best performing model chosen hyper-parameters:
+{'Dense': 2, 'Dropout': 0.09225974322037533, 'Dropout_1': 0.20942239619394942, 'max_norm': 5.397124926498551}
+-----------------------
+-----------------------
+
+opt for rnn on medium data:
 ----------------------------------
 Evalutation of best performing model:
 52/52 [==============================] - 3s 40ms/step - loss: 0.4047 - accuracy: 0.8297
 [0.4046521782875061, 0.8296969532966614]
 Best performing model chosen hyper-parameters:
 {'Dropout': 0.4143619965361732, 'Dropout_1': 0.09225974322037533, 'Dropout_2': 0.20942239619394942, 'LSTM': 0, 'LSTM_1': 5}
+
+rnn on joint:
+----------------------------------
+Evalutation of best performing model:
+98/98 [==============================] - 17s 159ms/step - loss: 0.4281 - accuracy: 0.7848
+[0.42807304859161377, 0.7847735285758972]
+Best performing model chosen hyper-parameters:
+{'Dropout': 0.11729755246044238, 'Dropout_1': 0.8444244099007299, 'Dropout_2': 0.5350807190884803, 'LSTM': 5, 'LSTM_1': 5}
