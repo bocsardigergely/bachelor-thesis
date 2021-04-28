@@ -1,39 +1,109 @@
-import numpy as np
 import pandas as pd
+import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from keras.layers import *
 from keras.models import Sequential, Model
-import pickle
+from tensorflow.keras.constraints import max_norm
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
+from sklearn.metrics import precision_score, f1_score, roc_auc_score, accuracy_score, recall_score
+from keras.callbacks import EarlyStopping
+
+import requests
+import io
+
 from tensorflow.keras.layers import Embedding
-#from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split
 
-df_short = pd.read_csv("data/processed/processed_short.csv")
-df_medium = pd.read_csv("data/processed/processed_medium.csv")
-df_dank= pd.read_csv("data/processed/processed_dank.csv")
+import neptune.new as neptune
+from neptune.new.integrations.tensorflow_keras import NeptuneCallback
 
-vectorizer = TextVectorization(max_tokens=30000, output_sequence_length=200)
+run = neptune.init(project='bocsardigergely/thesis',
+                   api_token='eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiIxZTlkNzc4NC1iYTZjLTQwODktODRiOS1iZjc2NjM3MDQxNWMifQ==')
 
-init_matrix = pickle.load(open( "init_matrix.p", "rb" ))
+neptune_cbk = NeptuneCallback(run=run, base_namespace='metrics')
+es = EarlyStopping(monitor='val_loss', patience=4)
 
-def build_model(hp):
+df_short = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/processed_short.csv")
+df_medium = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/processed_medium.csv")
+df_dank = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/processed_dank.csv")
+
+df_imdb = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/full_proc_imdb.csv")
+
+
+df_medium_half = df_medium.groupby('label').apply(lambda x: x.sample(frac=0.5)).sample(frac=1).reset_index(drop=True)
+df_dank_half = df_dank.groupby('label').apply(lambda x: x.sample(frac=0.5)).sample(frac=1).reset_index(drop=True)
+df_short_half = df_short.groupby('label').apply(lambda x: x.sample(frac=0.5)).sample(frac=1).reset_index(drop=True)
+
+vectorizer = TextVectorization(max_tokens=20000)
+
+
+df_joint = pd.concat([df_short, df_medium, df_dank])
+df_joint = df_joint.reset_index(drop=True)
+df_train = df_joint.sample(frac=1).reset_index(drop=True)
+vectorizer.adapt(np.asarray(df_train["text"]))
+
+def build_model():
+
+    response = requests.get('https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/universal.npy')
+    init_matrix = np.load(io.BytesIO(response.content))
     model = Sequential()
     model.add(Embedding(
-        20002,
-        100,
-        embeddings_initializer=keras.initializers.Constant(init_matrix),
-        trainable=False
-    ))
+      20002,
+      100,
+      embeddings_initializer=keras.initializers.Constant(init_matrix),
+      trainable=False
+  ))
     model.add(Bidirectional(LSTM(100, return_sequences=True)))
-    model.add(Dropout(0.2))
-    model.add(Bidirectional(LSTM(50, return_sequences=False)))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.4143619965361732))
+    model.add(Bidirectional(LSTM(1, return_sequences=False)))
+    model.add(Dropout(0.09225974322037533))
     model.add(Dense(50, activation='relu'))
+    model.add(Dropout(0.20942239619394942))
     model.add(Dense(1, activation='sigmoid'))
 
     model.compile(loss='binary_crossentropy',
                     optimizer='adam',
-                    metrics=['accuracy'])  
+                    metrics=['accuracy'])
+    
 
-print('asd')
+    print(model.summary())
+    return model
+
+
+
+def train_model(df):
+    #creating the desired vectors
+    text = np.asarray(df['text'])
+    y = df["label"]
+    text_train, text_test, y_train, y_test = train_test_split(
+    text, y, test_size=0.2, random_state=42)
+
+    X_train = vectorizer(text_train)
+    X_test = vectorizer(text_test)
+
+    model = build_model()
+
+    model.fit(X_train,
+                     y_train,
+                     batch_size=32,
+                     epochs=25,
+                     validation_split=0.1,
+                     callbacks=[es, neptune_cbk]
+                     )
+    
+    y_pred = model.predict(X_test)
+    y_pred_bool = np.where(y_pred>0.5,1,0)
+
+    accuracy = accuracy_score(y_test, y_pred_bool)
+    precision = precision_score(y_test, y_pred_bool)
+    recall = recall_score(y_test, y_pred_bool)
+    roc = roc_auc_score(y_test, y_pred_bool)
+    
+    
+    metrics = {'accuracy': accuracy, 'precision': precision, 'recall': recall, "roc": roc}
+
+    run['performance metrics'] = metrics
+
+train_model(df_medium_half)
+        

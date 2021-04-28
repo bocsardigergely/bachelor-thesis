@@ -1,0 +1,22 @@
+Id,Name,metrics/epoch/val_accuracy (last)
+THES-31,baseline_dank_full,
+THES-32,baseline_dank_half,
+THES-33,baseline_imdb,
+THES-27,baseline_medium_full,
+THES-28,baseline_medium_half,
+THES-30,baseline_short_full,
+THES-29,baseline_short_half,
+THES-11,conv_dank_full_size,0.5550000071525574
+THES-15,conv_dank_half,0.550000011920929
+THES-16,conv_full_imdb,0.8607500195503235
+THES-9,conv_medium_full_size,0.824999988079071
+THES-13,conv_medium_half,0.8199999928474426
+THES-10,conv_short_full_size,0.9775784611701965
+THES-14,conv_short_half,0.9730941653251648
+THES-21,lstm_dank_full,0.5099999904632568
+THES-22,lstm_dank_half,0.48500001430511475
+THES-25,lstm_full_imdb,0.8792499899864197
+THES-19,lstm_medium_full,0.8575000166893005
+THES-34,lstm_medium_half,0.6700000166893005
+THES-20,lstm_short_full,0.9798206090927124
+THES-23,lstm_short_half,0.9820627570152283

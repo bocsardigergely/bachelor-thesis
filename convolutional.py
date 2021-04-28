@@ -7,7 +7,7 @@ from keras.models import Sequential, Model
 from tensorflow.keras.constraints import max_norm
 from tensorflow.keras.layers.experimental.preprocessing import TextVectorization
 from sklearn.metrics import precision_score, f1_score, roc_auc_score, accuracy_score, recall_score
-from tf.keras.callbacks import EarlyStopping
+from keras.callbacks import EarlyStopping
 
 import requests
 import io
@@ -27,6 +27,8 @@ es = EarlyStopping(monitor='val_loss', patience=4)
 df_short = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/processed_short.csv")
 df_medium = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/processed_medium.csv")
 df_dank = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/processed_dank.csv")
+
+df_imdb = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/full_proc_imdb.csv")
 
 df_medium_half = df_medium.groupby('label').apply(lambda x: x.sample(frac=0.5)).sample(frac=1).reset_index(drop=True)
 df_dank_half = df_dank.groupby('label').apply(lambda x: x.sample(frac=0.5)).sample(frac=1).reset_index(drop=True)
@@ -108,7 +110,7 @@ def train_model(df):
                      )
     
     y_pred = model.predict([X_test, X_test, X_test])
-    y_pred_bool = np.argmax(y_pred, axis=1)
+    y_pred_bool = np.where(y_pred>0.5,1,0)
 
     accuracy = accuracy_score(y_test, y_pred_bool)
     precision = precision_score(y_test, y_pred_bool)
@@ -120,6 +122,5 @@ def train_model(df):
 
     run['performance metrics'] = metrics
 
-    print("Loss: ", loss)
-    print("Accuracy: ", accuracy)
+train_model(df_imdb)
         
