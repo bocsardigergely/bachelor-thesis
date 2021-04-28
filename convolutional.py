@@ -28,6 +28,10 @@ df_short = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachel
 df_medium = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/processed_medium.csv")
 df_dank = pd.read_csv("https://raw.githubusercontent.com/bocsardigergely/bachelor-thesis/main/data/processed/processed_dank.csv")
 
+df_medium_half = df_medium.groupby('label').apply(lambda x: x.sample(frac=0.5)).sample(frac=1).reset_index(drop=True)
+df_dank_half = df_dank.groupby('label').apply(lambda x: x.sample(frac=0.5)).sample(frac=1).reset_index(drop=True)
+df_short_half = df_short.groupby('label').apply(lambda x: x.sample(frac=0.5)).sample(frac=1).reset_index(drop=True)
+
 vectorizer = TextVectorization(max_tokens=20000)
 
 
