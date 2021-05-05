@@ -112,6 +112,8 @@ def train_model(df):
     y_pred = model.predict([X_test, X_test, X_test])
     y_pred_bool = np.where(y_pred>0.5,1,0)
 
+    
+
     accuracy = accuracy_score(y_test, y_pred_bool)
     precision = precision_score(y_test, y_pred_bool)
     recall = recall_score(y_test, y_pred_bool)
